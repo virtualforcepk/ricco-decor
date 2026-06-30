@@ -1,4 +1,4 @@
-import { useLayoutEffect, type MutableRefObject } from 'react'
+import { useLayoutEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
@@ -6,29 +6,22 @@ import Lenis from 'lenis'
 gsap.registerPlugin(ScrollTrigger)
 
 // ============================================================================
-// useScrollExperience — the single scroll engine for the whole page.
+// useScrollExperience — Lenis smooth scroll + GSAP ScrollTrigger reveals.
 //
-//   Lenis (smooth scroll) ──drives──▶ GSAP ticker ──drives──▶ ScrollTrigger
+//   • Lenis drives smooth scrolling, synced to the GSAP ticker + ScrollTrigger.
+//   • Every [data-reveal] element fades + rises 24px once, staggered in groups.
+//   • In-page anchor links scroll smoothly through Lenis.
 //
-// From that one timeline we derive:
-//   • `scrollRef` — whole-experience progress 0→1 (hero → portfolio), handed to
-//     the 3D <Scene> to drive the camera path + wireframe→photoreal resolve.
-//   • section reveals — every [data-reveal] element fades + rises 24px once,
-//     staggered in groups.
-//
-// prefers-reduced-motion: no scroll hijack, the 3D is frozen at a resolved
-// value, and reveals collapse to "already visible" (no motion).
+// prefers-reduced-motion: no scroll hijack, reveals collapse to "already
+// visible" (no motion).
 // ============================================================================
 
-const RESOLVED_STILL = 0.32 // frozen 3D state for reduced-motion / no-scroll
-
-export function useScrollExperience(scrollRef: MutableRefObject<number>) {
+export function useScrollExperience() {
   useLayoutEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // ── Reduced motion: freeze everything, show content, bail out ────────────
+    // ── Reduced motion: show content, no smooth scroll, bail out ─────────────
     if (reduced) {
-      scrollRef.current = RESOLVED_STILL
       const ctx = gsap.context(() => {
         gsap.set('[data-reveal]', { opacity: 1, y: 0, clearProps: 'all' })
       })
@@ -63,9 +56,8 @@ export function useScrollExperience(scrollRef: MutableRefObject<number>) {
     }
     document.addEventListener('click', onAnchorClick)
 
-    // ── Animations + master progress (scoped in a context for clean teardown) ─
+    // ── Section reveals — fade + 24px rise, grouped stagger ──────────────────
     const ctx = gsap.context(() => {
-      // Section reveals — fade + 24px rise, grouped stagger.
       gsap.set('[data-reveal]', { opacity: 0, y: 24 })
       ScrollTrigger.batch('[data-reveal]', {
         start: 'top 86%',
@@ -79,37 +71,12 @@ export function useScrollExperience(scrollRef: MutableRefObject<number>) {
             overwrite: true,
           }),
       })
-
-      // Master progress: hero top → portfolio enters. Drives the 3D camera +
-      // wireframe→photoreal resolve via scrollRef. Past this span the 3D simply
-      // holds its "exited" state while the 2D portfolio/approach/contact scroll.
-      ScrollTrigger.create({
-        trigger: '#top',
-        start: 'top top',
-        endTrigger: '#portfolio',
-        end: 'top center',
-        onUpdate: (self) => {
-          scrollRef.current = self.progress
-        },
-      })
     })
 
-    // Recalculate once late-loading fonts settle the layout.
+    // Recalculate once late-loading fonts/images settle the layout.
     const onLoad = () => ScrollTrigger.refresh()
     window.addEventListener('load', onLoad)
     const refreshT = window.setTimeout(() => ScrollTrigger.refresh(), 600)
-
-    if (import.meta.env.DEV) {
-      ;(
-        window as unknown as {
-          __riccoLenis?: Lenis
-          __riccoScrollRef?: MutableRefObject<number>
-        }
-      ).__riccoLenis = lenis
-      ;(
-        window as unknown as { __riccoScrollRef?: MutableRefObject<number> }
-      ).__riccoScrollRef = scrollRef
-    }
 
     return () => {
       document.removeEventListener('click', onAnchorClick)
@@ -119,5 +86,5 @@ export function useScrollExperience(scrollRef: MutableRefObject<number>) {
       lenis.destroy()
       ctx.revert()
     }
-  }, [scrollRef])
+  }, [])
 }

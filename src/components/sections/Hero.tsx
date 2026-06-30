@@ -8,17 +8,14 @@ export function Hero() {
       id="top"
       className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 text-center"
     >
-      {/* ATMOSPHERE PLACEHOLDER.
-          TODO(3D): in Phase 2 the fixed <Canvas> mandap renders behind this and
-          provides the real glow. This CSS radial is the standalone fallback so
-          the hero never looks flat with 3D disabled. Keep it subtle so it reads
-          as light spill, not a hard vignette. */}
+      {/* Warm light spill behind the wordmark — reads as a glow, not a hard
+          vignette. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            'radial-gradient(60% 50% at 50% 42%, rgba(200,168,98,0.10), rgba(94,31,43,0.05) 38%, rgba(12,10,9,0) 70%)',
+            'radial-gradient(62% 52% at 50% 42%, rgba(200,168,98,0.18), rgba(94,31,43,0.10) 40%, rgba(12,10,9,0) 72%)',
         }}
       />
       {/* Floor glow */}

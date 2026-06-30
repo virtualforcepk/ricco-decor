@@ -13,18 +13,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Code-split the heavy 3D/animation stack so first paint ships only the
-        // semantic shell. The <Canvas> is lazy-loaded (see ThreeBackground), so
-        // the three/r3f chunks stay out of the initial graph and load on demand.
+        // Split the animation libs into their own cacheable chunk.
         manualChunks(id) {
           if (!id.includes('node_modules')) return
-          if (id.includes('/three/') || id.includes('three-stdlib')) return 'three'
-          if (
-            id.includes('@react-three') ||
-            id.includes('postprocessing') ||
-            id.includes('/maath/')
-          )
-            return 'r3f'
           if (id.includes('/gsap/') || id.includes('/lenis/')) return 'motion'
         },
       },
