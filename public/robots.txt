@@ -1,0 +1,6 @@
+# Ricco Decor — robots.txt
+# TODO(client): confirm the production domain below before launch.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.riccodecor.com/sitemap.xml

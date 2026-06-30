@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ricco Decor">
+  <!-- TODO(client): replace with Ricco's real logo mark when supplied. -->
+  <rect width="64" height="64" rx="12" fill="#0C0A09" />
+  <g fill="none" stroke="#C8A862" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- finial -->
+    <circle cx="32" cy="13" r="1.7" fill="#E4C98A" stroke="none" />
+    <path d="M32 15 V18" />
+    <!-- dome -->
+    <path d="M25 30 Q32 16 39 30" />
+    <!-- arch between columns -->
+    <path d="M21 31 A11 11 0 0 1 43 31" />
+    <!-- columns -->
+    <path d="M22 31 V47" />
+    <path d="M42 31 V47" />
+    <!-- platform -->
+    <path d="M17 48 H47" />
+    <path d="M20 51 H44" opacity="0.55" />
+  </g>
+</svg>

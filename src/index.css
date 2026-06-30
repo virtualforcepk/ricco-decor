@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   RICCO DECOR — design tokens (warm dark luxury)
+   Single source of truth. Retuning the brand = editing the values below.
+   Every token is also a live CSS variable, e.g. var(--color-brass).
+
+   Token  (spec name)   →  Tailwind utility prefix
+   ----------------------------------------------------------------------------
+   bg-base   #0C0A09     →  bg-ink      (warm near-black page background)
+   bg-raised #15110E     →  bg-raised   (cards, raised surfaces)
+   brass     #C8A862     →  text/bg/border-brass        (primary accent)
+   brass-bright #E4C98A  →  text/bg/border-brass-bright (hover / highlight)
+   wine      #5E1F2B     →  text/bg/border-wine         (sparing deep red)
+   cream     #F4EDE3     →  text-cream  (primary text)
+   muted     #A89C8C     →  text-muted  (secondary text)
+   ============================================================================ */
+@theme {
+  --color-ink: #0c0a09;
+  --color-raised: #15110e;
+  --color-brass: #c8a862;
+  --color-brass-bright: #e4c98a;
+  --color-wine: #5e1f2b;
+  --color-cream: #f4ede3;
+  --color-muted: #a89c8c;
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Jost', system-ui, -apple-system, sans-serif;
+
+  /* Cinematic default easing token (mirrors the GSAP power2.out feel) */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    /* Lenis drives smooth scroll; keep native behavior off so they don't fight. */
+    scroll-behavior: auto;
+    background-color: var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-weight: 300;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-brass);
+    color: var(--color-ink);
+  }
+
+  /* Brass focus ring for keyboard users (accessibility) */
+  :focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+}
+
+/* Eyebrow label: Jost, uppercase, tracked out, brass. */
+@utility eyebrow {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--color-brass);
+}
+
+/* Hero scroll cue — a brass tick travelling down its track. */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(300%);
+    opacity: 0;
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.4s var(--ease-cinematic) infinite;
+}
+
+/* Lenis: the library adds these classes; keep its scroll model intact. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
