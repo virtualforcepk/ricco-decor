@@ -288,7 +288,7 @@ export const faqs = [
 // ── Per-page SEO strings (titles ≤60, descriptions 50–160) ──────────────────
 export const pageSeo = {
   home: {
-    title: 'Toronto Indian Wedding & Event Decor | Ricco Decor',
+    title: 'Ricco Decor — Luxury Event Design · Toronto & GTA',
     description:
       'Luxury event design for South Asian weddings, mandaps, florals, sangeets & corporate events across Toronto & the GTA — from traditional to modern.',
   },
