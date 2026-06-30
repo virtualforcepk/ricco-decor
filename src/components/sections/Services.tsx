@@ -1,15 +1,32 @@
+import { Link } from 'react-router-dom'
 import { services } from '../../data/content'
 import { Eyebrow } from '../ui/Eyebrow'
 
-export function Services() {
+export function Services({ cta }: { cta?: { label: string; to: string } } = {}) {
   return (
     <section id="services" className="relative z-10 px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <header data-reveal className="max-w-2xl">
-          <Eyebrow>What We Do</Eyebrow>
-          <h2 className="mt-6 font-display text-4xl font-light leading-tight text-cream sm:text-5xl md:text-6xl">
-            Every discipline of the room, under one roof
-          </h2>
+        <header
+          data-reveal
+          className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+        >
+          <div className="max-w-2xl">
+            <Eyebrow>What We Do</Eyebrow>
+            <h2 className="mt-6 font-display text-4xl font-light leading-tight text-cream sm:text-5xl md:text-6xl">
+              Every discipline of the room, under one roof
+            </h2>
+          </div>
+          {cta && (
+            <Link
+              to={cta.to}
+              className="group inline-flex shrink-0 items-center gap-2 border border-brass/50 px-6 py-3 font-body text-xs tracking-[0.2em] text-brass-bright uppercase transition-colors hover:bg-brass hover:text-ink"
+            >
+              {cta.label}
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          )}
         </header>
 
         {/* TODO(client): confirm the exact service taxonomy below. */}

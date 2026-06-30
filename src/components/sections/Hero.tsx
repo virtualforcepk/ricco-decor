@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { brand, nav } from '../../data/content'
 import { Eyebrow } from '../ui/Eyebrow'
 import { Logo } from '../ui/Logo'
@@ -53,15 +54,15 @@ export function Hero() {
         </p>
 
         <div className="mt-12">
-          <a
-            href={nav.cta.href}
+          <Link
+            to={nav.cta.href}
             className="group inline-flex items-center gap-3 border border-brass/60 px-9 py-3.5 font-body text-sm tracking-[0.2em] text-brass-bright uppercase transition-colors hover:bg-brass hover:text-ink"
           >
             Inquire
             <span aria-hidden className="transition-transform group-hover:translate-x-1">
               →
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 

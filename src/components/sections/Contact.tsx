@@ -9,7 +9,7 @@ const fieldBase =
 const labelBase =
   'eyebrow !text-[0.62rem] !tracking-[0.18em] mb-2 block text-muted'
 
-export function Contact() {
+export function Contact({ heading = true }: { heading?: boolean } = {}) {
   const [status, setStatus] = useState<Status>('idle')
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -57,13 +57,17 @@ export function Contact() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-14 md:grid-cols-2 md:gap-20">
         {/* Invitation */}
         <div data-reveal className="md:pt-4">
-          <Eyebrow>{contact.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-display text-4xl font-light leading-tight text-cream sm:text-5xl md:text-6xl">
-            {contact.title}
-          </h2>
-          <p className="mt-6 max-w-md font-body text-base font-light leading-relaxed text-muted">
-            {contact.invitation}
-          </p>
+          {heading && (
+            <>
+              <Eyebrow>{contact.eyebrow}</Eyebrow>
+              <h2 className="mt-6 font-display text-4xl font-light leading-tight text-cream sm:text-5xl md:text-6xl">
+                {contact.title}
+              </h2>
+              <p className="mt-6 max-w-md font-body text-base font-light leading-relaxed text-muted">
+                {contact.invitation}
+              </p>
+            </>
+          )}
 
           <div className="mt-10 space-y-4">
             <a

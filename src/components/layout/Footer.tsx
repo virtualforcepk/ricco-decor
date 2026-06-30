@@ -1,5 +1,14 @@
-import { brand, services, nav, socials, footer } from '../../data/content'
+import { Link } from 'react-router-dom'
+import { brand, services, socials, footer } from '../../data/content'
 import { Logo } from '../ui/Logo'
+
+const explore = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Services', href: '/services' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Contact', href: '/contact' },
+]
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -10,13 +19,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           {/* Brand */}
           <div className="md:col-span-5">
-            <a
-              href="#top"
-              aria-label={`${brand.name} — back to top`}
-              className="inline-block"
-            >
+            <Link to="/" aria-label={`${brand.name} — home`} className="inline-block">
               <Logo tone="brass" className="aspect-[3/2] w-40" />
-            </a>
+            </Link>
             <p className="mt-5 max-w-sm font-body text-sm font-light leading-relaxed text-muted">
               {footer.blurb}
             </p>
@@ -33,20 +38,37 @@ export function Footer() {
             <ul className="space-y-3">
               {services.map((s) => (
                 <li key={s.id}>
-                  <a
-                    href="#services"
+                  <Link
+                    to="/services"
                     className="font-body text-sm font-light text-cream/80 transition-colors hover:text-brass-bright"
                   >
                     {s.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </nav>
 
-          {/* Contact */}
+          {/* Explore */}
+          <nav className="md:col-span-2" aria-label="Explore">
+            <h2 className="eyebrow mb-5">Explore</h2>
+            <ul className="space-y-3">
+              {explore.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    to={l.href}
+                    className="font-body text-sm font-light text-cream/80 transition-colors hover:text-brass-bright"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Connect */}
           <div className="md:col-span-2">
-            <h2 className="eyebrow mb-5">Contact</h2>
+            <h2 className="eyebrow mb-5">Connect</h2>
             <ul className="space-y-3 font-body text-sm font-light">
               <li>
                 <a
@@ -64,24 +86,8 @@ export function Footer() {
                   {brand.phone}
                 </a>
               </li>
-              <li>
-                <a
-                  href={nav.cta.href}
-                  className="text-brass transition-colors hover:text-brass-bright"
-                >
-                  Start an inquiry →
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Social */}
-          <div className="md:col-span-2">
-            <h2 className="eyebrow mb-5">Follow</h2>
-            <ul className="space-y-3 font-body text-sm font-light">
               {socials.map((s) => (
                 <li key={s.label}>
-                  {/* TODO(client): point at real social URLs. */}
                   <a
                     href={s.href}
                     target="_blank"

@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { brand, nav } from '../../data/content'
 
 /**
- * Fixed top navigation. Transparent over the hero, turns solid warm-dark once
- * the user scrolls. Logo left, section links + "Inquire" right. On mobile the
- * links collapse into a full-screen overlay menu.
- *
- * Uses a plain passive scroll listener so it works in Phase 1 (no Lenis yet)
- * and keeps working once Lenis is wired in Phase 3 — Lenis updates window
- * scroll position, so window.scrollY stays accurate.
+ * Fixed top navigation. Transparent over the home hero, solid warm-dark once
+ * scrolled — and solid from the top on every non-home page. Logo left, route
+ * links + "Inquire" right. On mobile the links collapse into an overlay menu.
  */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const { pathname } = useLocation()
+  const solid = scrolled || pathname !== '/'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -20,6 +19,9 @@ export function Nav() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Close the menu on route change.
+  useEffect(() => setMenuOpen(false), [pathname])
 
   // Lock body scroll while the mobile menu is open.
   useEffect(() => {
@@ -29,22 +31,11 @@ export function Nav() {
     }
   }, [menuOpen])
 
-  const Wordmark = (
-    <a
-      href="#top"
-      onClick={() => setMenuOpen(false)}
-      className="font-display text-xl tracking-[0.28em] text-cream transition-colors hover:text-brass-bright sm:text-2xl"
-      aria-label={`${brand.name} — back to top`}
-    >
-      RICCO<span className="text-brass"> DECOR</span>
-    </a>
-  )
-
   return (
     <header
       className={[
         'fixed inset-x-0 top-0 z-50 transition-all duration-500',
-        scrolled
+        solid
           ? 'border-b border-brass/10 bg-ink/85 backdrop-blur-md'
           : 'border-b border-transparent bg-transparent',
       ].join(' ')}
@@ -53,28 +44,37 @@ export function Nav() {
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10"
         aria-label="Primary"
       >
-        {Wordmark}
+        <Link
+          to="/"
+          className="font-display text-xl tracking-[0.28em] text-cream transition-colors hover:text-brass-bright sm:text-2xl"
+          aria-label={`${brand.name} — home`}
+        >
+          RICCO<span className="text-brass"> DECOR</span>
+        </Link>
 
         {/* Desktop links */}
         <div className="hidden items-center gap-10 md:flex">
           <ul className="flex items-center gap-9">
             {nav.links.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="font-body text-sm font-light tracking-wide text-muted transition-colors hover:text-cream"
+                <Link
+                  to={link.href}
+                  className={[
+                    'font-body text-sm font-light tracking-wide transition-colors hover:text-cream',
+                    pathname === link.href ? 'text-brass' : 'text-muted',
+                  ].join(' ')}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a
-            href={nav.cta.href}
+          <Link
+            to={nav.cta.href}
             className="group inline-flex items-center gap-2 border border-brass/60 px-6 py-2.5 font-body text-sm tracking-[0.15em] text-brass-bright uppercase transition-colors hover:border-brass hover:bg-brass hover:text-ink"
           >
             {nav.cta.label}
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -122,23 +122,21 @@ export function Nav() {
         <ul className="flex flex-col items-center gap-7">
           {nav.links.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
+              <Link
+                to={link.href}
                 className="font-display text-4xl text-cream transition-colors hover:text-brass-bright"
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
-        <a
-          href={nav.cta.href}
-          onClick={() => setMenuOpen(false)}
+        <Link
+          to={nav.cta.href}
           className="mt-4 inline-flex items-center gap-2 border border-brass px-10 py-3 font-body text-sm tracking-[0.2em] text-brass-bright uppercase transition-colors hover:bg-brass hover:text-ink"
         >
           {nav.cta.label}
-        </a>
+        </Link>
       </div>
     </header>
   )

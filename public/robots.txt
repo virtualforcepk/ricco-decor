@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.riccodecor.com/sitemap.xml
+Sitemap: https://ricco-decor.vercel.app/sitemap.xml
