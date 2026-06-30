@@ -1,26 +1,29 @@
 # Ricco Decor — marketing site
 
-A single-page, editorial marketing site for **Ricco Decor**, a luxury event
-design house in Toronto / GTA (South Asian weddings, mandaps, florals, corporate
-events). Dark, warm, editorial luxury · slow cinematic motion · their real work
-front and centre.
+A prerendered, multi-page marketing site for **Ricco Decor**, a luxury event
+design house in Mississauga serving Toronto / GTA (South Asian weddings, mandaps,
+florals, sangeets, corporate events). Dark, warm, editorial luxury · their real
+work front and centre.
 
-**Live:** https://ricco-decor.vercel.app
+**Live:** https://ricco-decor.vercel.app · **Pages:** `/` · `/about` ·
+`/services` · `/gallery` · `/contact`
 
 ## Stack
 
-- **Vite + React + TypeScript**
+- **Vite 7 + React 19 + TypeScript**
+- **vite-react-ssg** — prerenders a static HTML file per route (real, crawlable
+  content + per-page `<head>`), with **React Router** for real `/path` URLs
 - **Tailwind CSS v4** (`@theme` tokens in `src/index.css`)
-- **GSAP + ScrollTrigger** + **Lenis** — smooth scroll, section reveals, and the
-  parallax in the "Biggest Hits" journey
+- **GSAP + ScrollTrigger** + **Lenis** — smooth scroll, reveals, parallax
+- **unhead** (via `<Seo>`) — per-page title/description/canonical/OG/JSON-LD
 - **@fontsource** — Cormorant Garamond (display) + Jost (body)
 
 ## Run
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # production build → dist/
+npm run dev      # vite-react-ssg dev (http://localhost:5193)
+npm run build    # tsc + prerender → dist/{index,about,services,gallery,contact}.html
 npm run preview  # serve the build
 ```
 
@@ -28,36 +31,41 @@ npm run preview  # serve the build
 
 ```
 src/
-  data/content.ts            ← ALL copy + photo manifest (single source of truth)
-  index.css                  ← design tokens (@theme) + global styles
-  App.tsx                    ← assembles the page
-  hooks/useScrollExperience  ← Lenis smooth scroll + GSAP reveals
+  main.tsx                   ← ViteReactSSG entry (routes → prerendered pages)
+  routes.tsx                 ← / (Layout) → Home, About, Services, Gallery, Contact
+  Layout.tsx                 ← Nav + Footer + scroll experience (per-route reveals)
+  pages/                     ← one component per route (own <h1>, copy, photos, <Seo>)
   components/
-    layout/   Nav, Footer
-    sections/ Hero, Positioning, Services, BiggestHits, Portfolio, Approach, Contact
-    ui/       Eyebrow, Logo, PlaceholderImage
+    Seo.tsx                  ← per-page <head> (title/desc/canonical/OG/JSON-LD)
+    layout/   Nav, Footer    ← React Router <Link> nav
+    sections/ Hero, Positioning, Services, BiggestHits, Portfolio, Approach, Contact, ContactCta
+    ui/       Eyebrow, Logo, PageHeader, PlaceholderImage
+  data/
+    content.ts               ← ALL copy + photo manifest + per-page SEO strings
+    schema.ts                ← JSON-LD (LocalBusiness, Service, FAQ, Breadcrumb, CollectionPage)
 ```
 
-All copy is semantic HTML for SEO/accessibility. `prefers-reduced-motion`
-disables the smooth-scroll hijack and shows content without motion.
+## SEO
 
-## Brand assets
-
-Ricco's real logo (`public/brand/`) and photography (`public/gallery/`) were
-pulled from riccodecor.com. The logo is black line-art, recolored to brass via a
-CSS mask (`components/ui/Logo.tsx`). Retune the palette in the `@theme` block of
-`src/index.css`; edit all copy in `src/data/content.ts`.
+- **Prerendered**: each route ships real HTML (1300–4200 crawlable chars), not an
+  empty `<div id="root">`. Lighthouse SEO **100/100**, on-page checklist **100/100**.
+- Exactly one `<h1>` per page; unique title (≤60) + description (50–160); self
+  canonical; OG/Twitter; `en-CA`.
+- Structured data: `LocalBusiness` (real Mississauga NAP), `Service` per offer,
+  `FAQPage`, `BreadcrumbList`, `CollectionPage`.
+- `public/sitemap.xml` lists every route; `public/robots.txt` points to it;
+  `vercel.json` serves clean URLs.
 
 ## ⚠️ Before a full launch (search `TODO`)
 
 | What | Where | Notes |
 |---|---|---|
+| **Domain** | `components/Seo.tsx` (`SITE`), `sitemap.xml`, `robots.txt` | Canonicals/sitemap point at the Vercel URL — swap to the real domain. |
 | **Form backend** | `sections/Contact.tsx` | MVP opens a pre-filled email (mailto). Upgrade to a GoHighLevel webhook / Formspree / serverless endpoint. |
-| **Copy / taxonomy** | `data/content.ts` | Service one-liners and project titles are suggested — confirm with the client. |
-| **High-res photos** | `public/gallery/` | Current images are web-res from the Wix CDN; originals would be crisper. |
-| **OG image + domain** | `index.html`, `public/{robots,sitemap}` | Set the real production domain; a dedicated 1200×630 OG image is ideal. |
+| **Copy / taxonomy** | `data/content.ts` | Service copy, FAQs, and titles are drafted — confirm with the client. |
+| **High-res photos + OG image** | `public/gallery/` | Web-res from the Wix CDN; originals + a dedicated 1200×630 OG image would be crisper. |
 
 ## Deploy
 
-Hosted on **Vercel** (project `ricco-decor`). Redeploy with `vercel --prod` from
-this folder. Repo: https://github.com/virtualforcepk/ricco-decor
+Hosted on **Vercel** (project `ricco-decor`). Redeploy with `vercel --prod`.
+Repo: https://github.com/virtualforcepk/ricco-decor
